@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .wrapper{
+            width: 500px;
+            border: 1px solid black;
+            text-align: center;
+            margin: 200px auto;
+        }
+        .wrapper div{
+            margin:15px 5px;
+            padding: 5px;
+        }
+        .clock p{
+            font-size: 30px;
+            font-weight: 700;
+        }
+        .wrapper h3 span{
+            color: cornflowerblue;
+        }
+        .info p{
+            text-align: left;
+            margin: 5px 50px;
+
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="settime">
+            <h2>设置时间(分钟)</h2>
+            <input type="text" value="25">
+            <button class="btn">确定</button>
+        </div>
+        <div class="clock">
+            <h3>时间</h3>
+            <p class="timeText">0:0</p>
+        </div>
+        <div class="music" style="display: none">
+            <audio src="./Lenka - The Long Way Home.mp3" loop='loop'>歌曲</audio>
+        </div>
+        <div>
+            <button class="btn">停止，放弃当前番茄</button>
+            <h3>番茄数：<span class="num">0</span></h3>
+        </div>
+        <div class="info">
+            <h4>功能说明：</h4> 
+            <p>
+                1: 设置计时时间，点击确认，开始计时<br>
+                2: 计时时间到，闹钟响起，计时停止，番茄数加一 <br>
+                3: 计时时间未到，点击确认，重置计时 <br>
+                4: 计时时间到，点击确认，开始下一轮的计时 <br>
+                5: 点击停止，停止计时，闹钟，放弃当前番茄  
+            </p>
+        </div>
+    </div>
+    <script>
+        let second = 0,min = 0,time;
+        let num=0;
+        let timeText=document.getElementsByClassName('timeText')[0];
+        let settime = document.getElementsByTagName('input')[0];
+        let btn = document.getElementsByClassName('btn')[0];
+        let btn2 = document.getElementsByClassName('btn')[1];
+        let span = document.getElementsByClassName('num')[0];
+        let music = document.getElementsByTagName('audio')[0];
+        // window.onload(function(){
+        //     music.play();
+        // })
+        //确定计时时间，并开始计时
+        btn.addEventListener('click',() => {
+            let data = settime.value;
+            begin(data);
+        })
+        //停止计时，闹钟，放弃当前番茄
+        btn2.addEventListener('click',() => {
+            music.load();
+            second = 0;
+            min =0 ;
+            clearInterval(time);
+            timeText.innerHTML = `${min}:${second}`;
+           
+        })
+
+
+
+        //计时函数
+        function begin(data){
+            //初始化时间，音乐，计时.  注意定时器的清空，每次开启下一个定时器之前，要确保清除上一个定时器
+            second = 0;
+            min = 0;
+            music.load();
+            clearInterval(time);
+            time = setInterval((mydata=data) => {   //箭头函数传参问题， 还有定时器回调函数传参问题
+            second++;
+            if(second == 60){
+                min++;
+                second = 0;
+            }
+            if(min == data){ 
+                min = data;
+                second = 0;
+                timeText.innerHTML = `${min}:${second}`;
+                clearInterval(time);
+                num++;
+                span.innerHTML = `${num}`;
+                music.play();
+
+                // alert('时间到，可以休息了');
+            }
+            timeText.innerHTML = `${min}:${second}`;
+        }, 1000);
+        }
+
+    //可以创建一个对象吗，将属性，方法都放到对象上去。   怎样才能提高封装性呢  ，将变量私有化
+    //可以使用本地储存，来记录每一天的番茄数吗？
+    //将每一天的番茄数，填到表格中去，可以然自己看见，单页面跳转
+    //
+        
+    </script>
+</body>
+</html>
